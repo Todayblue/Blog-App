@@ -1,10 +1,17 @@
-import CreateBlog from '@/app/components/CreateBlog'
-import React from 'react'
+import CreateBlog from "@/app/components/CreateBlog";
+import React from "react";
 
-const page = () => {
-  return (
-    <CreateBlog />
-  )
-}
+const getCategories = async () => {
+  const res = await fetch("http://localhost:3000/api/category");
+  const data = await res.json();
 
-export default page
+  return data.categories;
+};
+
+const page = async () => {
+  const categories = await getCategories();
+
+  return <CreateBlog categories={categories} />;
+};
+
+export default page;

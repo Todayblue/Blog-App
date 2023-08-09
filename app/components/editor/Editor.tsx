@@ -1,12 +1,10 @@
-"use client"
+"use client";
 
 import { SetStateAction, useRef } from "react";
-const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
-
+const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
 import { TOOLS_CREATE } from "./constants";
 import dynamic from "next/dynamic";
-
 
 type EditorProps = {
   tools?: unknown[];
@@ -21,7 +19,6 @@ const Editor = ({
   onChange,
   placeholder,
 }: EditorProps) => {
-
   const modules = {
     toolbar: tools,
   };
@@ -29,7 +26,7 @@ const Editor = ({
   return (
     <div className="container max-w-lg ">
       <ReactQuill
-        placeholder={placeholder }
+        placeholder={placeholder}
         value={value}
         theme={"snow"}
         onChange={onChange}
@@ -40,6 +37,5 @@ const Editor = ({
 };
 
 export default Editor;
-
 
 //https://github.com/zenoamaro/react-quill/issues/292

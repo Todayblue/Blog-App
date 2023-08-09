@@ -23,21 +23,20 @@ model Profile {
 }
 
 model Blog {
-  id          String     @id @default(auto()) @map("_id") @db.ObjectId
-  createdAt   DateTime   @default(now())
-  title       String?
-  content     String?
-  coverImage  String?
-  published   Boolean    @default(false)
-  author      User       @relation(fields: [authorId], references: [id])
-  authorId    String     @db.ObjectId
-  categoryIDs String[]   @db.ObjectId
-  categories  Category[] @relation(fields: [categoryIDs], references: [id])
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt  DateTime @default(now())
+  title      String?
+  content    String?
+  coverImage String?
+  published  Boolean  @default(false)
+  author     User     @relation(fields: [authorId], references: [id])
+  authorId   String   @db.ObjectId
+  category   Category @relation(fields: [categoryId], references: [id])
+  categoryId String   @db.ObjectId
 }
 
 model Category {
-  id      String   @id @default(auto()) @map("_id") @db.ObjectId
-  name    String?
-  postIDs String[] @db.ObjectId
-  blogs   Blog[]   @relation(fields: [postIDs], references: [id])
+  id    String  @id @default(auto()) @map("_id") @db.ObjectId
+  name  String?
+  blogs Blog[]
 }
