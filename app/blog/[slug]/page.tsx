@@ -1,37 +1,21 @@
-"use client"
+import { Blog } from "@/types/blog";
 
-import axios from "axios"
-import { useEffect, useState } from "react"
+const getPost = async (id: string) => {
+  const res = await fetch(`http://localhost:3000/api/blog/${id}`, {
+    cache: "no-cache",
+  });
+  const data = await res.json();
 
-interface Post {
-  id: string
-  content: string
-}
+  return data.post;
+};
 
-export default function Page({ params }: { params: { slug: string } }) {
-  const [post, setPost] = useState<Post>({
-    id: "",
-    content: ""
-  })
+export default async function Page({ params }: { params: { slug: string } }) {
+  const post: Blog = await getPost(params.slug);
 
-  
-  
-
-  const getPost = async () => {
-    try {
-      const response = await axios.get(`/api/post/${params.slug}`)
-      console.log(response.data);
-      setPost(response.data.post)
-
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
-  useEffect(() => {
-    getPost();
-  }, [])
-  
-  return <div>My Post: {params.slug}
-  <p>{post.content}</p></div>
+  return (
+    <div>
+      My Post: {post.title}
+      <p>{post.content}</p>
+    </div>
+  );
 }

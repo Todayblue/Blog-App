@@ -1,17 +1,9 @@
 import prisma from "@/utils/prisma";
 import { NextResponse } from "next/server";
 
-interface IParams {
-  id: string;
-}
-
-
 export const GET = async (req: Request, res: NextResponse) => {
   try {
-    const id = req.url.split("/post/")[1];
-
-    console.log(id);
-
+    const id = req.url.split("/blog/")[1];
 
     const post = await prisma.blog.findFirst({ where: { id } });
     if (!post)
@@ -32,7 +24,6 @@ export const GET = async (req: Request, res: NextResponse) => {
 
 //     console.log(id);
 
-
 //     const post = await prisma.post.findUnique({
 //       where: {
 //         id: id,
@@ -50,5 +41,3 @@ export const GET = async (req: Request, res: NextResponse) => {
 //     throw new Error(error);
 //   }
 // }
-
-

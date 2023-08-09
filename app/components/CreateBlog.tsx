@@ -1,11 +1,10 @@
 "use client";
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Editor from "./editor/Editor";
-import { PhotoIcon, UserCircleIcon } from "@heroicons/react/24/solid";
+import { PhotoIcon } from "@heroicons/react/24/solid";
 // style
 import "react-quill/dist/quill.snow.css";
-import { type } from "os";
 
 type Category = {
   id: string;
@@ -14,8 +13,8 @@ type Category = {
 
 type FormType = {
   title: string;
-  content: string;
-  published: boolean;
+  content?: string;
+  published?: boolean;
   coverImage: string;
   authorId: string;
   categoryId: "";
@@ -26,7 +25,7 @@ type CreateBlogProps = {
 };
 
 const CreateBlog = ({ categories }: CreateBlogProps) => {
-  const [formData, setFormData] = useState<Partial<FormType>>({
+  const [formData, setFormData] = useState<FormType>({
     title: "",
     coverImage: "",
     authorId: "",
@@ -71,8 +70,6 @@ const CreateBlog = ({ categories }: CreateBlogProps) => {
     }
   };
 
-  console.log(formData);
-
   return (
     <form className="flex justify-center items-center flex-col  w-full">
       <div className="mb-6">
@@ -111,9 +108,7 @@ const CreateBlog = ({ categories }: CreateBlogProps) => {
                   id="categoryId"
                   className="mt-2 select select-bordered w-full "
                 >
-                  <option disabled selected>
-                    Choose Category?
-                  </option>
+                  <option disabled>Choose Category?</option>
                   {categories.map((category) => {
                     return (
                       <option value={category.id} key={category.id}>

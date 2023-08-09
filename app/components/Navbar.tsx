@@ -18,7 +18,7 @@ const menu = [
 
 const Navbar = () => {
   return (
-    <div className="navbar bg-base-100">
+    <div className="navbar bg-base-100 container mx-auto">
       <div className="navbar-start">
         <div className="dropdown">
           <Link href="#">
@@ -44,9 +44,14 @@ const Navbar = () => {
             tabIndex={0}
             className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
           >
-            <li>
-              <a>Blog</a>
-            </li>
+            {menu.map((menu, idx) => {
+              return (
+                <li key={idx}>
+                  <Link href={menu.href}>{menu.name}</Link>
+                </li>
+              );
+            })}
+
             <li>
               <a>Forum</a>
             </li>
@@ -56,6 +61,7 @@ const Navbar = () => {
           daisyUI
         </Link>
       </div>
+
       <div className="navbar-end hidden lg:flex">
         <ul className="menu menu-horizontal px-2 mr-5 text-base font-meduim">
           {menu.map((menu, idx) => {

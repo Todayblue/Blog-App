@@ -1,65 +1,41 @@
-import Card from "../components/Card"
+import Card from "../components/Card";
+import { Blog as BlogType } from "@/types/blog";
 
+const getBlogs = async () => {
+  const res = await fetch(`http://localhost:3000/api/blog`, {
+    cache: "no-store",
+  });
+  const data = await res.json();
 
-const projectsData = [
-  {
-    title: 'A Search Engine',
-    description: `What if you could look up any information in the world? Webpages, images, videos
-    and more. Google has many features to help you find exactly what you're looking
-    for.`,
-    imgSrc: 'https://images.unsplash.com/photo-1563481551840-12b6ab093799?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1166&q=80',
-    href: 'https://www.google.com',
-  },
-  {
-    title: 'The Time Machine',
-    description: `Imagine being able to travel back in time or to the future. Simple turn the knob
-    to the desired date and press "Go". No more worrying about lost keys or
-    forgotten headphones with this simple yet affordable solution.`,
-    imgSrc: 'https://images.unsplash.com/photo-1567589443762-44e6c1008639?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1175&q=80',
-    href: '/blog/the-time-machine',
-  },
-  {
-    title: 'The Time Machine',
-    description: `Imagine being able to travel back in time or to the future. Simple turn the knob
-    to the desired date and press "Go". No more worrying about lost keys or
-    forgotten headphones with this simple yet affordable solution.`,
-    imgSrc: 'https://images.unsplash.com/photo-1567589443762-44e6c1008639?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1175&q=80',
-    href: '/blog/the-time-machine',
-  },
-  {
-    title: 'The Time Machine',
-    description: `Imagine being able to travel back in time or to the future. Simple turn the knob
-    to the desired date and press "Go". No more worrying about lost keys or
-    forgotten headphones with this simple yet affordable solution.`,
-    imgSrc: 'https://images.unsplash.com/photo-1567589443762-44e6c1008639?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1175&q=80',
-    href: '/blog/the-time-machine',
-  }
-]
+  return data && data.blogs;
+};
 
-export default function Projects() {
+export default async function Blog() {
+  const blogs: BlogType[] = await getBlogs();
+
   return (
     <>
-      <div className="divide-y divide-gray-200 dark:divide-gray-700 ">
+      <div className="divide-y divide-gray-200 dark:divide-gray-700">
         <div className="space-y-2 pb-8 pt-6 md:space-y-5">
           <h1 className="ml-8 text-3xl font-extrabold leading-9 tracking-tight text-gray-900 dark:text-gray-100 sm:text-4xl sm:leading-10 md:text-6xl md:leading-14">
             Blog
           </h1>
-          
         </div>
-        <div className="container py-12 ml-5 ">
-          <div className="-m-4 flex flex-wrap justify-center">
-            {projectsData.map((d) => (
+        <div className=" py-12 px-5">
+          <div className=" grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {blogs.map((blog) => (
               <Card
-                key={d.title}
-                title={d.title}
-                description={d.description}
-                imgSrc={d.imgSrc}
-                href={d.href}
+                key={blog.id}
+                id={blog.id}
+                title={blog.title}
+                content={blog.content}
+                cover={blog.coverImage}
+                category={blog.category.name}
               />
             ))}
           </div>
         </div>
       </div>
     </>
-  )
+  );
 }

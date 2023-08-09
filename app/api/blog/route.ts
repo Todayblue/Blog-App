@@ -3,7 +3,12 @@ import { NextResponse } from "next/server";
 
 export async function GET() {
   try {
-    const blogs = await prisma.blog.findMany();
+    const blogs = await prisma.blog.findMany({
+      include: {
+        author: true,
+        category: true,
+      },
+    });
 
     return NextResponse.json(
       { message: "GET Blogs Successfully", blogs },
@@ -33,6 +38,7 @@ export async function POST(request: Request) {
         categoryId,
       },
     });
+
     return NextResponse.json(
       { message: "POST blog successfully", blog },
       { status: 200 }
