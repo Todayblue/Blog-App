@@ -1,49 +1,52 @@
-"use client"
-
-import React, { useEffect, useState } from 'react'
-import Card from '../components/cardShow/Card'
-import axios from 'axios';
+import Card from "../components/Card"
 
 
-interface Post {
-  id: string
-  content: string
-}
+const projectsData = [
+  {
+    title: 'A Search Engine',
+    description: `What if you could look up any information in the world? Webpages, images, videos
+    and more. Google has many features to help you find exactly what you're looking
+    for.`,
+    imgSrc: '/static/images/google.png',
+    href: 'https://www.google.com',
+  },
+  {
+    title: 'The Time Machine',
+    description: `Imagine being able to travel back in time or to the future. Simple turn the knob
+    to the desired date and press "Go". No more worrying about lost keys or
+    forgotten headphones with this simple yet affordable solution.`,
+    imgSrc: '/static/images/time-machine.jpg',
+    href: '/blog/the-time-machine',
+  },
+]
 
-const Blog = () => {
-  const [blogs, setBlogs] = useState<Post[]>([])
 
-  const getBlogs = async () => {
-    try {
-      const response = await axios.get('/api/blog')
-      console.log(response.data);
-      setBlogs(response.data.blog)
-
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
-  useEffect(() => {
-    getBlogs();
-  }, [])
-
+export default function Projects() {
   return (
     <>
-
-      <div className='container mx-auto grid grid-cols-3 gap-10 mt-20 '>
-        {blogs.map(blog =>
-          <Card key={blog.id} content={blog.content} id={blog.id} />
-        )}
-      </div>
-      {/* {blogs.map(post => (
-        <div key={post.id}>
-          <Link href={`http://localhost:3000/blogs/${post.id}`}> Click</Link>
+      <div className="divide-y divide-gray-200 dark:divide-gray-700">
+        <div className="space-y-2 pb-8 pt-6 md:space-y-5">
+          <h1 className="text-3xl font-extrabold leading-9 tracking-tight text-gray-900 dark:text-gray-100 sm:text-4xl sm:leading-10 md:text-6xl md:leading-14">
+            Projects
+          </h1>
+          <p className="text-lg leading-7 text-gray-500 dark:text-gray-400">
+            Showcase your projects with a hero image (16 x 9)
+          </p>
         </div>
-      ))} */}
+        <div className="container py-12">
+          <div className="-m-4 flex flex-wrap">
+            {projectsData.map((d) => (
+              <Card
+                key={d.title}
+                title={d.title}
+                description={d.description}
+                imgSrc={d.imgSrc}
+                href={d.href}
+              />
+            ))}
+          </div>
+        </div>
+      </div>
     </>
   )
 }
-
-export default Blog
-
