@@ -55,14 +55,14 @@ const Card = ({ id, title, cover, content, category }: CardProps) => {
             dangerouslySetInnerHTML={{ __html: cleanBody }}
             className="line-clamp"
           ></div>
-          <p>{category}</p>
+          <p className="py-2">{category}</p>
           {id && (
             <Link
               href={`/blog/${id}`}
-              className="text-base font-medium leading-6 text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
+              className="text-base font-medium leading-6 text-primary-500 hover:text-primary-600 dark:hover:text-primary-400 flex justify-end"
               aria-label={`Link to ${title}`}
             >
-              Learn more &rarr;
+              read more... &rarr;
             </Link>
           )}
         </div>

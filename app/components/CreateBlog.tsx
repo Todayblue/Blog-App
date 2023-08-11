@@ -31,7 +31,11 @@ const CreateBlog = ({ categories }: CreateBlogProps) => {
     authorId: "",
     categoryId: "",
   });
+
   const [content, setContent] = useState("");
+  const [file, setFile] = useState<File | undefined>();
+  const [fileURL, setFileURL] = useState<string | undefined>();
+
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const name = event.target.name;
@@ -40,6 +44,15 @@ const CreateBlog = ({ categories }: CreateBlogProps) => {
       ...formData,
       [name]: event.target.value,
     });
+  };
+
+  const onImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const uploadedFile = e.target.files?.[0];
+
+    if (uploadedFile) {
+      setFile(uploadedFile);
+      setFileURL(URL.createObjectURL(uploadedFile));
+    }
   };
 
   const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -54,21 +67,37 @@ const CreateBlog = ({ categories }: CreateBlogProps) => {
   const submitPost = async (event: React.FormEvent) => {
     event.preventDefault();
 
+    if (!file) return;
+
     try {
+      const data = new FormData();
+      data.set('file', file);
+
+      const uploadRes = await fetch('/api/upload', {
+        method: 'POST',
+        body: data,
+      });
+
+      if (!uploadRes.ok) throw new Error(await uploadRes.text());
+
+      const uploadData = await uploadRes.json();
+      const coverImage = uploadData.data; // Get the uploaded image path or URL
+
       const response = await axios.post("/api/blog", {
         title: formData.title,
         content,
         published: true,
-        coverImage:
-          "https://images.unsplash.com/photo-1684852703493-bdae9ac4cc35?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1180&q=80",
+        coverImage, // Use the uploaded image path or URL
         authorId: "64d12b35a2d4151b91b6d90b",
         categoryId: formData.categoryId,
       });
+
       console.log(response);
     } catch (error) {
       console.error(error);
     }
   };
+
 
   return (
     <form className="flex justify-center items-center flex-col  w-full">
@@ -128,28 +157,34 @@ const CreateBlog = ({ categories }: CreateBlogProps) => {
                 </label>
                 <div className="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10">
                   <div className="text-center">
-                    <PhotoIcon
-                      className="mx-auto h-12 w-12 text-gray-300"
-                      aria-hidden="true"
-                    />
+
                     <div className="mt-4 flex text-sm leading-6 text-gray-600">
                       <label
                         htmlFor="coverImage"
                         className="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500"
                       >
-                        <span>Upload a file</span>
+                        {fileURL ? (
+                          <div>
+                            <img src={fileURL} alt="Preview" style={{ maxWidth: '100%', maxHeight: '300px' }} />
+                          </div>
+                        ) : <PhotoIcon
+                          className="mx-auto h-12 w-12 text-gray-300"
+                          aria-hidden="true"
+                        />}
                         <input
                           id="coverImage"
                           name="coverImage"
                           type="file"
+
                           className="sr-only"
+                          onChange={onImageUpload}
                         />
+                        <span>Upload a file</span>
+
                       </label>
-                      <div className="pl-1">or drag and drop</div>
+
                     </div>
-                    <div className="text-xs leading-5 text-gray-600">
-                      PNG, JPG, GIF up to 10MB
-                    </div>
+
                   </div>
                 </div>
               </div>

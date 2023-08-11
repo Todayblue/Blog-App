@@ -1,3 +1,7 @@
+import { ImageUpload } from "./components/ImageUpload";
+
 export default function Home() {
-  return <main>{/* <Layout /> */}</main>;
+  return <main>
+<ImageUpload />    
+  </main>;
 }
