@@ -1,14 +1,15 @@
+"use client";
+
 import Link from "next/link";
 import React from "react";
+import { signIn, signOut } from "next-auth/react";
+import { useSession } from "next-auth/react";
+import Image from "next/image";
 
 const menu = [
   {
     name: "Blog",
     href: "/blog",
-  },
-  {
-    name: "Write",
-    href: "/blog/create-blog",
   },
   {
     name: "Forum",
@@ -17,6 +18,8 @@ const menu = [
 ];
 
 const Navbar = () => {
+  const { data: session } = useSession();
+
   return (
     <div className="navbar bg-base-100 container mx-auto">
       <div className="navbar-start">
@@ -71,10 +74,51 @@ const Navbar = () => {
               </li>
             );
           })}
+          {session?.user && (
+            <li>
+              <Link href={"/blog/create-blog"}>Write</Link>
+            </li>
+          )}
         </ul>
-        <Link href="http://localhost:3000/login" className="btn ">
-          Login
-        </Link>
+        <div>
+          {session?.user ? (
+            <div className="flex-none gap-2">
+              <div className="dropdown dropdown-end">
+                <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
+                  <div className="w-10 rounded-full">
+                    <Image
+                      width={500}
+                      height={500}
+                      src={session?.user.image || ""}
+                      alt=""
+                    />
+                  </div>
+                </label>
+                <ul
+                  tabIndex={0}
+                  className="mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52"
+                >
+                  <li>
+                    <a className="justify-between">
+                      Profile
+                      <span className="badge">New</span>
+                    </a>
+                  </li>
+                  <li>
+                    <a>Settings</a>
+                  </li>
+                  <li className="btn btn-outline" onClick={() => signOut()}>
+                    Sign out
+                  </li>
+                </ul>
+              </div>
+            </div>
+          ) : (
+            <button className="btn btn-outline" onClick={() => signIn()}>
+              Sign In
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );

@@ -1,5 +1,7 @@
-import prisma from "@/utils/prisma";
+import prisma from "@/lib/prisma";
 import { NextResponse } from "next/server";
+import { nanoid } from "nanoid";
+import slugify from "slugify";
 
 export async function GET() {
   try {
@@ -25,15 +27,17 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { title, content, coverImage, published, authorId, categoryId } =
-      body;
+    const { title, content, coverImage, authorId, categoryId } = body;
+
+    const id = nanoid(10).replace(/[_-]/g, "");
+    const slug = `${slugify(title, { lower: true })}-${id}`;
 
     const blog = await prisma.blog.create({
       data: {
         title,
+        slug,
         content,
         coverImage,
-        published,
         authorId,
         categoryId,
       },

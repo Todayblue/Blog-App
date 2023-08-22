@@ -24,7 +24,7 @@ const Editor = ({
   };
 
   return (
-    <div className="container max-w-lg ">
+    <div className="container max-w-2xl ">
       <ReactQuill
         placeholder={placeholder}
         value={value}

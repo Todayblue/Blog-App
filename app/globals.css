@@ -34,6 +34,7 @@
 /* post contents */
 .content {
   @apply tracking-normal leading-relaxed;
+  margin: 1rem 7rem 7rem 7rem;
 }
 
 .content h1 {
@@ -53,6 +54,19 @@
 
 .content p {
   font-size: 1.15rem;
+}
+
+.content img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
+}
+
+.content br {
+  content: "A" !important;
+  display: block !important;
+  margin-bottom: 1.5em !important;
 }
 
 .content a {
@@ -86,4 +100,3 @@
 .quill > .ql-container > .ql-editor.ql-blank::before {
   @apply text-sm text-gray-400;
 }
-

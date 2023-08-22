@@ -1,12 +1,9 @@
-import Image from 'next/image'
- 
-export default function Page() {
+import React from 'react'
+
+const page = () => {
   return (
-    <Image
-      
-      width={500}
-      height={500}
-      alt="Picture of the author"
-    />
+    <div>page</div>
   )
 }
+
+export default page

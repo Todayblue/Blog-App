@@ -1,43 +1,80 @@
-import prisma from "@/utils/prisma";
+import prisma from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
-export const GET = async (req: Request, res: NextResponse) => {
+export async function GET(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
   try {
-    const id = req.url.split("/blog/")[1];
+    const blogId = params.id;
 
-    const post = await prisma.blog.findFirst({ where: { id } });
-    if (!post)
-      return NextResponse.json({ message: "Not Found" }, { status: 404 });
-    return NextResponse.json({ message: "Success", post }, { status: 200 });
+    const blog = await prisma.blog.findFirst({
+      where: {
+        id: blogId,
+      },
+    });
+    return NextResponse.json(
+      { message: "GET Blog successfully", blog },
+      { status: 200 }
+    );
   } catch (error) {
-    return NextResponse.json({ message: "Error", error }, { status: 500 });
-  } finally {
-    await prisma.$disconnect();
+    return NextResponse.json(
+      { message: "Can't GET Blog", error },
+      { status: 500 }
+    );
   }
-};
+}
 
-// export default async function getBlogsById(
-//   params: IParams
-// ) {
-//   try {
-//     const { id } = params;
+export async function PUT(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const { title, content, coverImage, authorId, categoryId } =
+      await request.json();
+    const blogId = params.id;
+    console.log("blogId", blogId);
 
-//     console.log(id);
+    const updateBlog = await prisma.blog.update({
+      where: {
+        id: blogId,
+      },
+      data: {
+        title,
+        content,
+        coverImage,
+        authorId,
+        categoryId,
+      },
+    });
+    return NextResponse.json(
+      { message: "UPDATE Blog successfully", updateBlog },
+      { status: 200 }
+    );
+  } catch (error) {
+    return NextResponse.json(
+      { message: "Can't UPDATE Blogs", error },
+      { status: 500 }
+    );
+  }
+}
 
-//     const post = await prisma.post.findUnique({
-//       where: {
-//         id: id,
-//       },
-//     });
-
-//     if (!post) {
-//       return null;
-//     }
-//     return {
-//       ...post,
-//       createdAt: post.createdAt.toString()
-//     }
-//   } catch (error: any) {
-//     throw new Error(error);
-//   }
-// }
+export async function DELETE(request: Request) {
+  const blogId = request.url.split("/blog/")[1];
+  try {
+    const deleteBlog = await prisma.blog.delete({
+      where: {
+        id: blogId,
+      },
+    });
+    return NextResponse.json(
+      { message: "DELETE Blog Successfully", deleteBlog },
+      { status: 200 }
+    );
+  } catch (error) {
+    return NextResponse.json(
+      { message: "Can't DELETE Blogs", error },
+      { status: 500 }
+    );
+  }
+}

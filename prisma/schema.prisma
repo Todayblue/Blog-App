@@ -28,7 +28,7 @@ model Blog {
   title      String?
   content    String?
   coverImage String?
-  published  Boolean  @default(false)
+  slug       String?
   author     User     @relation(fields: [authorId], references: [id])
   authorId   String   @db.ObjectId
   category   Category @relation(fields: [categoryId], references: [id])

@@ -1,0 +1,30 @@
+import { Blog } from "@/types/blog";
+import Image from "next/image";
+
+const getPost = async (id: string) => {
+  const res = await fetch(`http://localhost:3000/api/blog/${id}`, {
+    cache: "no-cache",
+  });
+  const data = await res.json();
+
+  return data.blog;
+};
+
+export default async function Page({ params }: { params: { id: string } }) {
+  // const splitId = params.id.split("-");
+  // const id = splitId[splitId.length - 1];
+  console.log(params.id);
+
+  const post: Blog = await getPost(params.id);
+
+  return (
+    <div className="flex flex-col justify-center items-center m-6 gap-6">
+      <p className="text-3xl font-semibold ">{post.title}</p>
+      <Image src={post.coverImage} alt="coverImage" width={720} height={576} />
+      <div
+        className="content "
+        dangerouslySetInnerHTML={{ __html: post.content }}
+      ></div>
+    </div>
+  );
+}
