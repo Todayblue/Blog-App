@@ -82,7 +82,8 @@ const Navbar = () => {
         </ul>
         <div>
           {session?.user ? (
-            <div className="flex-none gap-2">
+            <div className="flex items-center gap-2">
+              <h3 className="text-xl font-bold">{session.user.name}</h3>
               <div className="dropdown dropdown-end">
                 <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
                   <div className="w-10 rounded-full">

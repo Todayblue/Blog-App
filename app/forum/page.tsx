@@ -1,9 +1,20 @@
-import React from 'react'
+import { LoginButton, LogoutButton } from "../components/Btn";
 
-const page = () => {
+export default function Home() {
   return (
-    <div>page</div>
-  )
-}
+    <main
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "70vh",
+      }}
+    >
+      <div>
+        <LoginButton />
 
-export default page
+        <LogoutButton />
+      </div>
+    </main>
+  );
+}

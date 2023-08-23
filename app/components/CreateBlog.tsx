@@ -8,12 +8,9 @@ import toast, { Toaster } from "react-hot-toast";
 
 // style
 import "react-quill/dist/quill.snow.css";
-import { useEffect } from "react";
+import { Category as Cate } from "@/types/blog";
 
-type Category = {
-  id: string;
-  name: string;
-};
+interface Category extends Pick<Cate, "id" | "name"> {}
 
 type FormType = {
   title: string;
@@ -25,10 +22,11 @@ type FormType = {
 };
 
 type CreateBlogProps = {
+  userId: string | undefined;
   categories: Category[];
 };
 
-const CreateBlog = ({ categories }: CreateBlogProps) => {
+const CreateBlog = ({ userId, categories }: CreateBlogProps) => {
   const [formData, setFormData] = useState<FormType>({
     title: "",
     coverImage: "",
@@ -90,14 +88,18 @@ const CreateBlog = ({ categories }: CreateBlogProps) => {
         title: formData.title,
         content,
         coverImage, // Use the uploaded image path or URL
-        authorId: "64e46e3828da69797803aaad",
+        authorId: userId,
         categoryId: formData.categoryId,
       });
 
       if (response) {
-        router.push("/blog");
+        const duration = 1000;
         toast.dismiss(toastId);
-        toast.success("Create Blog Successfully!");
+        toast.success("Create Blog Successfully!", {
+          duration,
+        });
+
+        window.location.href = "/blog";
       }
     } catch (error) {
       console.error(error);

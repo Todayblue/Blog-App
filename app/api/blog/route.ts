@@ -1,16 +1,40 @@
 import prisma from "@/lib/prisma";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { nanoid } from "nanoid";
 import slugify from "slugify";
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  // Ref: https://nextjs.org/docs/app/api-reference/functions/next-request
+  // GET /api/blog?category=cat -> filter only category cat
+  const searchParams = request.nextUrl.searchParams;
+  const categoryQuery = searchParams.get("category");
+
   try {
-    const blogs = await prisma.blog.findMany({
-      include: {
-        author: true,
-        category: true,
-      },
-    });
+    let blogs;
+
+    if (categoryQuery) {
+      blogs = await prisma.blog.findMany({
+        include: {
+          author: true,
+          category: true,
+        },
+        where: {
+          category: {
+            name: {
+              contains: categoryQuery,
+              mode: "insensitive", // Case-insensitive search
+            },
+          },
+        },
+      });
+    } else {
+      blogs = await prisma.blog.findMany({
+        include: {
+          author: true,
+          category: true,
+        },
+      });
+    }
 
     return NextResponse.json(
       { message: "GET Blogs Successfully", blogs },
@@ -24,7 +48,7 @@ export async function GET() {
   }
 }
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const { title, content, coverImage, authorId, categoryId } = body;

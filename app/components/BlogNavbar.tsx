@@ -1,4 +1,3 @@
-import axios from "axios";
 import { Category } from "@/types/blog";
 import Link from "next/link";
 import getCategories from "../action/getCategories";
@@ -14,9 +13,13 @@ const BlogNavbar = async () => {
         </h1>
       </div>
       {categories.map((category) => (
-        <button key={category.id} className="btn btn-outline mb-8 ml-4">
-          <Link href={`/blog/category/${category.id}`}>{category.name}</Link>
-        </button>
+        <Link
+          key={category.id}
+          href={`/blog/category/${category.name}`}
+          className="btn btn-outline mb-8 ml-4"
+        >
+          {category.name}
+        </Link>
       ))}
     </div>
   );

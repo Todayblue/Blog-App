@@ -1,3 +1,12 @@
+export interface Author {
+  id: string;
+  name: string;
+  email: string;
+  emailVerified: null | boolean;
+  image: string;
+  role: "USER" | "ADMIN";
+}
+
 export interface Category {
   id: string;
   name: string;
@@ -11,5 +20,6 @@ export interface Blog {
   content: string;
   coverImage: string;
   authorId: string;
+  author: Author;
   category: Category;
 }

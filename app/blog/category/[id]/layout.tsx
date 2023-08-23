@@ -1,11 +1,10 @@
 import React from "react";
-import BlogNavbar from "../components/BlogNavbar";
 
 const layout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <main className="">
-      <BlogNavbar />
-      <div>{children}</div>
+    <main className="h-full">
+      <div className="divider divide-gray-200 dark:divide-gray-900"></div>
+      {children}
     </main>
   );
 };

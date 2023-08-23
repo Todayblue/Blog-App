@@ -12,6 +12,9 @@ export async function GET(
       where: {
         id: blogId,
       },
+      include: {
+        author: true,
+      },
     });
     return NextResponse.json(
       { message: "GET Blog successfully", blog },
