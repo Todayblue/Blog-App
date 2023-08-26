@@ -1,79 +1,62 @@
 import prisma from "@/lib/prisma";
-import { NextRequest, NextResponse } from "next/server";
-import { nanoid } from "nanoid";
-import slugify from "slugify";
+import { NextResponse } from "next/server";
+import { Blog } from "@/types/model";
 
-export async function GET(request: NextRequest) {
-  // Ref: https://nextjs.org/docs/app/api-reference/functions/next-request
-  // GET /api/blog?category=cat -> filter only category cat
-  const searchParams = request.nextUrl.searchParams;
-  const categoryQuery = searchParams.get("category");
-
+export async function GET() {
   try {
-    let blogs;
-
-    if (categoryQuery) {
-      blogs = await prisma.blog.findMany({
-        include: {
-          author: true,
-          category: true,
-        },
-        where: {
-          category: {
-            name: {
-              contains: categoryQuery,
-              mode: "insensitive", // Case-insensitive search
-            },
-          },
-        },
-      });
-    } else {
-      blogs = await prisma.blog.findMany({
-        include: {
-          author: true,
-          category: true,
-        },
-      });
-    }
+    const blogs = await prisma.blog.findMany({
+      include: {
+        tags: true,
+        // author: true,
+      },
+    });
 
     return NextResponse.json(
-      { message: "GET Blogs Successfully", blogs },
+      { message: "GET Blog successfully", blogs },
       { status: 200 }
     );
   } catch (error) {
     return NextResponse.json(
-      { message: "Can't GET Blogs", error },
+      { message: "Can't GET Blog", error },
       { status: 500 }
     );
   }
 }
 
-export async function POST(request: NextRequest) {
+type BlogType = {
+  id: number;
+  createdAt: Date;
+  title: string;
+  content: string;
+  coverImage: string;
+  authorId: number;
+  tags: number[];
+};
+
+export async function POST(request: Request) {
   try {
-    const body = await request.json();
-    const { title, content, coverImage, authorId, categoryId } = body;
+    const { title, tags, content, coverImage, authorId }: BlogType =
+      await request.json();
+    const tagIds = tags.map((tagId) => ({ id: tagId }));
 
-    const id = nanoid(10).replace(/[_-]/g, "");
-    const slug = `${slugify(title, { lower: true })}-${id}`;
-
-    const blog = await prisma.blog.create({
+    const posts = await prisma.blog.create({
       data: {
         title,
-        slug,
         content,
         coverImage,
         authorId,
-        categoryId,
+        tags: {
+          connect: tagIds, // Use connect to establish relationships with existing tags
+        },
       },
     });
-
     return NextResponse.json(
-      { message: "POST blog successfully", blog },
+      { message: "POST Post successfully", posts },
       { status: 200 }
     );
   } catch (error) {
     return NextResponse.json(
-      { message: "Can not POT blog", error },
+      { message: "Can not POST Posts", error },
       { status: 500 }
     );
   }

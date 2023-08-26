@@ -1,5 +1,5 @@
 export interface Author {
-  id: string;
+  id: number;
   name: string;
   email: string;
   emailVerified: null | boolean;
@@ -10,16 +10,18 @@ export interface Author {
 export interface Category {
   id: string;
   name: string;
+  blogIDs: string[];
   blogs: Blog[];
 }
 
 export interface Blog {
   id: string;
-  title: string;
   slug: string;
+  title: string;
   content: string;
   coverImage: string;
   authorId: string;
   author: Author;
-  category: Category;
+  categoryIDs: string[];
+  categories: Category[];
 }

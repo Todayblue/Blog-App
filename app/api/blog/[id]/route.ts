@@ -1,4 +1,5 @@
 import prisma from "@/lib/prisma";
+import { Blog } from "@/types/model";
 import { NextResponse } from "next/server";
 
 export async function GET(
@@ -6,14 +7,14 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    const blogId = params.id;
-
+    const blogId = parseInt(params.id);
     const blog = await prisma.blog.findFirst({
       where: {
         id: blogId,
       },
       include: {
-        author: true,
+        tags: true,
+        // author: true,
       },
     });
     return NextResponse.json(
@@ -33,10 +34,9 @@ export async function PUT(
   { params }: { params: { id: string } }
 ) {
   try {
-    const { title, content, coverImage, authorId, categoryId } =
+    const { title, content, coverImage, authorId, tags }: Blog =
       await request.json();
-    const blogId = params.id;
-    console.log("blogId", blogId);
+    const blogId = parseInt(params.id);
 
     const updateBlog = await prisma.blog.update({
       where: {
@@ -47,7 +47,9 @@ export async function PUT(
         content,
         coverImage,
         authorId,
-        categoryId,
+        tags: {
+          connect: tags.map((tag) => ({ id: tag.id })),
+        },
       },
     });
     return NextResponse.json(
@@ -56,14 +58,17 @@ export async function PUT(
     );
   } catch (error) {
     return NextResponse.json(
-      { message: "Can't UPDATE Blogs", error },
+      { message: "Can't UPDATE Blog", error },
       { status: 500 }
     );
   }
 }
 
-export async function DELETE(request: Request) {
-  const blogId = request.url.split("/blog/")[1];
+export async function DELETE(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
+  const blogId = parseInt(params.id);
   try {
     const deleteBlog = await prisma.blog.delete({
       where: {
@@ -76,7 +81,7 @@ export async function DELETE(request: Request) {
     );
   } catch (error) {
     return NextResponse.json(
-      { message: "Can't DELETE Blogs", error },
+      { message: "Can't DELETE Blog", error },
       { status: 500 }
     );
   }

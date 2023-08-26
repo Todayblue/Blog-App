@@ -1,12 +1,12 @@
 import axios from "axios";
 import { Category } from "@/types/blog";
 
-export default async function getCategories() {
+export default async function getTags() {
   try {
-    const res = await axios.get("http://localhost:3000/api/category");
+    const res = await axios.get("http://localhost:3000/api/tag");
     const data = res.data;
 
-    return data.categories;
+    return data.tags;
   } catch (error) {
     console.log(error);
   }

@@ -1,20 +1,10 @@
-import { LoginButton, LogoutButton } from "../components/Btn";
+"use client";
+import TagSelect from "../components/TagSelect";
 
 export default function Home() {
   return (
-    <main
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        height: "70vh",
-      }}
-    >
-      <div>
-        <LoginButton />
-
-        <LogoutButton />
-      </div>
+    <main>
+      <TagSelect />
     </main>
   );
 }

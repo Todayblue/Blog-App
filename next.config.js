@@ -2,6 +2,7 @@
 const nextConfig = {
   experimental: {
     serverActions: true,
+    externalDir: true,
   },
   images: {
     domains: ["images.unsplash.com"],

@@ -1,9 +1,9 @@
-import { Category } from "@/types/blog";
 import Link from "next/link";
-import getCategories from "../action/getCategories";
+import getTags from "../action/getTags";
+import { Tag } from "@/types/model";
 
 const BlogNavbar = async () => {
-  const categories: Category[] = await getCategories();
+  const tags: Tag[] = await getTags();
 
   return (
     <div>
@@ -12,13 +12,13 @@ const BlogNavbar = async () => {
           <Link href={"/blog"}>Blog</Link>
         </h1>
       </div>
-      {categories.map((category) => (
+      {tags.map((tag) => (
         <Link
-          key={category.id}
-          href={`/blog/category/${category.name}`}
+          key={tag.id}
+          href={`/blog/tag/${tag.id}`}
           className="btn btn-outline mb-8 ml-4"
         >
-          {category.name}
+          {tag.name}
         </Link>
       ))}
     </div>

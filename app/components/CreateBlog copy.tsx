@@ -25,10 +25,10 @@ type FormType = {
 };
 
 type CreateBlogProps = {
-  userId: string;
+  userId: string | undefined;
 };
 
-const CreateBlog = ({}) => {
+const CreateBlog = ({ userId }: CreateBlogProps) => {
   const [selectedOption, setSelectedOption] = useState(null);
   const [tags, setTags] = useState<Tag[]>([]);
 
@@ -37,10 +37,6 @@ const CreateBlog = ({}) => {
     label: tag.name,
   }));
 
-  const userId = 1;
-
-  // console.log("userId", userId);
-
   const [formData, setFormData] = useState<FormType>({
     title: "",
     coverImage: "",
@@ -48,7 +44,7 @@ const CreateBlog = ({}) => {
     tags: [],
   });
 
-  // console.log(formData);
+  console.log(formData);
 
   const [content, setContent] = useState("");
   const [file, setFile] = useState<File | undefined>();
@@ -126,12 +122,14 @@ const CreateBlog = ({}) => {
       const coverImage = uploadData.data; // Get the uploaded image path or URL
 
       const response: FormType = await axios.post("/api/blog", {
-        title: formData.title,
-        content,
-        coverImage,
-        authorId: userId,
-        tags: formData.tags,
+        title: "title",
+        content: "content",
+        coverImage: "cover",
+        authorId: "1",
+        tags: [1, 2],
       });
+
+      console.log("response", response);
 
       if (response) {
         const duration = 1000;
