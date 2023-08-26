@@ -1,6 +1,6 @@
 import { Role } from "@prisma/client";
-import type { Session, User } from "next-auth";
-import type { JWT } from "next-auth/jwt";
+import type { DefaultUser } from "next-auth";
+import "next-auth/jwt";
 
 type UserId = number;
 
@@ -12,10 +12,11 @@ declare module "next-auth/jwt" {
 }
 
 declare module "next-auth" {
-  interface Session {
-    user: User & {
+  interface Session extends DefaultSession {
+    // Omit<Type, Keys> -> picking all properties from Type and then removing Keys
+    user: {
       id: UserId;
       role: Role;
-    };
+    } & DefaultSession["user"];
   }
 }

@@ -115,7 +115,10 @@ const Navbar = () => {
               </div>
             </div>
           ) : (
-            <button className="btn btn-outline" onClick={() => signIn()}>
+            <button
+              className="btn btn-outline"
+              onClick={() => signIn("google")}
+            >
               Sign In
             </button>
           )}
