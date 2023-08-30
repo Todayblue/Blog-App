@@ -18,10 +18,10 @@ export default async function RootLayout({
 }) {
   return (
     <html lang="en" data-theme="winter">
-      <body className={inter.className}>
+      <body className={`${inter.className} px-10`}>
         <NextAuthProvider>
           <Navbar />
-          <div className="container mx-auto">{children}</div>
+          {children}
         </NextAuthProvider>
       </body>
     </html>

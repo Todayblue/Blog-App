@@ -13,7 +13,11 @@ export async function GET(
         id: tagId,
       },
       include: {
-        blogs: true,
+        blogs: {
+          include: {
+            tags: true,
+          },
+        },
       },
     });
     return NextResponse.json(

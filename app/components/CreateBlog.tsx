@@ -5,16 +5,11 @@ import Editor from "./editor/Editor";
 import { PhotoIcon } from "@heroicons/react/24/solid";
 import toast, { Toaster } from "react-hot-toast";
 import Select from "react-select";
-
-// style
-import "react-quill/dist/quill.snow.css";
-import { Category as Cate } from "@/types/blog";
-import getTags from "../action/getTags";
 import { Tag } from "@/types/model";
-import { title } from "process";
-// import getCategories from "../action/getCategories";
 
-interface Category extends Pick<Cate, "id" | "name"> {}
+import "react-quill/dist/quill.snow.css";
+import getTags from "../action/getTags";
+import Link from "next/link";
 
 type FormType = {
   title: string;
@@ -24,22 +19,20 @@ type FormType = {
   tags: number[];
 };
 
-type CreateBlogProps = {
-  userId: string;
+type userProp = {
+  userId: number;
 };
 
-const CreateBlog = ({}) => {
+const CreateBlog = ({ userId }: userProp) => {
   const [selectedOption, setSelectedOption] = useState(null);
   const [tags, setTags] = useState<Tag[]>([]);
+
+  console.log("userId", userId);
 
   const tagOptions = tags.map((tag) => ({
     value: tag.id,
     label: tag.name,
   }));
-
-  const userId = 1;
-
-  // console.log("userId", userId);
 
   const [formData, setFormData] = useState<FormType>({
     title: "",
@@ -47,8 +40,6 @@ const CreateBlog = ({}) => {
     authorId: "",
     tags: [],
   });
-
-  // console.log(formData);
 
   const [content, setContent] = useState("");
   const [file, setFile] = useState<File | undefined>();
@@ -81,13 +72,6 @@ const CreateBlog = ({}) => {
     }
   };
 
-  // const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-  // setFormData({
-  //   ...formData,
-  //   [event.target.name]: event.target.value,
-  // });
-  // };
-
   const handleSelectChange = (selectedOptions: any) => {
     setSelectedOption(selectedOptions);
 
@@ -99,11 +83,6 @@ const CreateBlog = ({}) => {
       ...formData,
       tags: selectedTagIDs,
     });
-
-    // If you want to log the selected category IDs and names
-    // const selectedNames = selectedOptions.map((option: any) => option.label);
-    console.log("Selected Category IDs:", selectedTagIDs);
-    // console.log("Selected Category Names:", selectedNames);
   };
 
   const submitPost = async (event: React.FormEvent) => {
@@ -156,29 +135,36 @@ const CreateBlog = ({}) => {
         <div className="mb-6">
           <div className="space-y-12 ">
             <div className="border-b border-gray-900/10 pb-12">
-              <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+              <div className=" mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+                <div className="col-span-full">
+                  <div className="text-2xl font-bold ">Create Blog</div>
+                </div>
+
                 <div className="col-span-full">
                   <label
-                    htmlFor="username"
+                    htmlFor="titlee"
                     className="block text-sm font-medium leading-6 text-gray-900"
                   >
                     Title
                   </label>
-                  <div>
-                    <input
-                      value={formData.title}
-                      onChange={handleInputChange}
-                      name="title"
-                      type="text"
-                      placeholder="Type here"
-                      className="mt-2 input input-bordered block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                    />{" "}
-                  </div>
+
+                  <input
+                    value={formData.title}
+                    onChange={handleInputChange}
+                    name="title"
+                    type="text"
+                    placeholder="Type here"
+                    className="mt-2 input input-bordered block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  />
                 </div>
 
                 <div className="col-span-full">
-                  {/* <TagSelect /> */}
-
+                  <label
+                    htmlFor="tag"
+                    className="block text-sm font-medium mb-2 leading-6 text-gray-900"
+                  >
+                    Tag
+                  </label>
                   <Select
                     isMulti
                     name="categories"
@@ -186,37 +172,17 @@ const CreateBlog = ({}) => {
                     className="basic-multi-select"
                     classNamePrefix="select"
                     value={selectedOption}
-                    onChange={handleSelectChange} // Attach the onChange event handler
-                  />
-
-                  {/* <TagSelect categories={categories} /> */}
-                </div>
-                {/* <div className="col-span-full">
-                  <label
-                    htmlFor="caregory"
-                    className="block text-sm font-medium leading-6 text-gray-900"
-                  >
-                    Caregory
-                  </label>
-                  <select
                     onChange={handleSelectChange}
-                    name="categoryId"
-                    id="categoryId"
-                    className="mt-2 select select-bordered w-full "
-                  >
-                    <option>Choose Category?</option>
-                    {categories.map((category) => {
-                      return (
-                        <option value={category.id} key={category.id}>
-                          {category.name}
-                        </option>
-                      );
-                    })}
-                  </select>
-                </div> */}
+                  />
+                  <Link href={"/blog/tag"} className="  flex justify-end">
+                    <button className="btn btn-xs btn-outline mt-3">
+                      Add Tag
+                    </button>
+                  </Link>
+                </div>
                 <div className="col-span-full">
                   <label
-                    htmlFor="cover-photo"
+                    htmlFor="cover-image"
                     className="block text-sm font-medium leading-6 text-gray-900"
                   >
                     Cover Image

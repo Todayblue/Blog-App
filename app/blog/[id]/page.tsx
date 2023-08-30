@@ -9,11 +9,8 @@ const getPost = async (id: string) => {
 };
 
 export default async function Page({ params }: { params: { id: string } }) {
-  // const splitId = params.id.split("-");
-  // const id = splitId[splitId.length - 1];
-
   const post: Blog = await getPost(params.id);
-  // console.log(post);
+  // console.log("----------------------------------------", post);
 
   return (
     <div className="flex flex-col justify-center items-center m-6 gap-6">

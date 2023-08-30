@@ -16,18 +16,6 @@ type CardProps = {
 };
 
 const Card = ({ id, title, coverImage, content, tags }: CardProps) => {
-  const router = useRouter();
-
-  const handleDelete = async () => {
-    try {
-      axios.delete(`/api/blog/${id}`);
-      toast.success("Delete Blog Successfully");
-      router.push("/blog");
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   return (
     <>
       <Toaster />
@@ -75,9 +63,20 @@ const Card = ({ id, title, coverImage, content, tags }: CardProps) => {
 
             {id && (
               <div className="flex flex-row justify-between py-4 ">
-                <div className="flex flex-row space-x-3 font-medium ">
+                {/* <div className="flex flex-row space-x-3 font-medium ">
                   {tags.map((tag) => (
                     <div className="badge badge-lg">{tag.name}</div>
+                  ))}
+                </div> */}
+                <div className="flex flex-row space-x-3 font-medium">
+                  {tags.map((tag) => (
+                    <Link
+                      key={tag.id}
+                      href={`/blog/tag/${tag.id}`}
+                      className="badge badge-lg"
+                    >
+                      {tag.name}
+                    </Link>
                   ))}
                 </div>
                 <Link

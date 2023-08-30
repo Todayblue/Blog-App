@@ -51,12 +51,12 @@ export async function POST(request: Request) {
       },
     });
     return NextResponse.json(
-      { message: "POST Post successfully", posts },
+      { message: "POST Blog successfully", posts },
       { status: 200 }
     );
   } catch (error) {
     return NextResponse.json(
-      { message: "Can not POST Posts", error },
+      { message: "Can not POST Blog", error },
       { status: 500 }
     );
   }
