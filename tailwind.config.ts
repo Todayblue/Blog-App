@@ -7,17 +7,9 @@ const config: Config = {
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   daisyui: {
-    themes: ["light", "winter", "dark", "cupcake", "lemonade"],
+    themes: ["light", "winter", "lofi", "cupcake", "lemonade"],
   },
-  theme: {
-    extend: {
-      backgroundImage: {
-        "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
-        "gradient-conic":
-          "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
-      },
-    },
-  },
-  plugins: [require("daisyui"), require("@tailwindcss/forms")],
+
+  plugins: [require("@tailwindcss/typography"), require("daisyui")],
 };
 export default config;

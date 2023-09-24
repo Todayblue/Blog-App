@@ -4,8 +4,7 @@ datasource db {
 }
 
 generator client {
-  provider        = "prisma-client-js"
-  previewFeatures = ["fullTextSearch"]
+  provider = "prisma-client-js"
 }
 
 model Account {
@@ -55,6 +54,7 @@ model Profile {
 model Blog {
   id         Int      @id @default(autoincrement())
   createdAt  DateTime @default(now())
+  slug       String?  @unique
   title      String?
   content    String?
   coverImage String?
@@ -64,8 +64,9 @@ model Blog {
 }
 
 model Tag {
-  id    Int    @id @default(autoincrement())
-  name  String @unique
+  id    Int     @id @default(autoincrement())
+  slug  String? @unique
+  name  String  @unique
   blogs Blog[]
 }
 

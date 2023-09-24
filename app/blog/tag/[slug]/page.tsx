@@ -1,42 +1,40 @@
 "use client";
-import React from "react";
 import BlogList from "@/components/Blog/BlogList";
-import { getBlogs } from "@/lib/getBlogs";
-import { UseQueryResult, useQuery } from "@tanstack/react-query";
-import { Blog, Tag } from "../../types/blog";
-import Link from "next/link";
+import BlogPage from "@/components/Blog/BlogPage";
+import { getTagBySlug } from "@/lib/getTagBySlug";
 import getTags from "@/lib/getTags";
-import PaginationControls from "@/components/PaginationControls";
+import { Tag } from "@/types/blog";
 
-const Page = ({
-  searchParams,
-}: {
-  searchParams: { [key: string]: string | string[] | undefined };
-}) => {
-  const blogsQuery: UseQueryResult<Blog[]> = useQuery({
-    queryKey: ["blogs"],
-    queryFn: getBlogs,
+import { useQuery, UseQueryResult } from "@tanstack/react-query";
+import Link from "next/link";
+
+const Page = ({ params }: { params: { slug: string } }) => {
+  const { slug } = params;
+  const { data: tag, isLoading }: UseQueryResult<Tag> = useQuery({
+    queryKey: ["tag", slug],
+    queryFn: () => getTagBySlug(slug),
   });
   const tagsQuery = useQuery({ queryKey: ["tags"], queryFn: getTags });
 
-  const page = searchParams["page"] ?? "1";
-  const per_page = searchParams["per_page"] ?? "2";
-
-  // mocked, skipped and limited in the real app
-  const start = (Number(page) - 1) * Number(per_page); // 0, 5, 10 ...
-  const end = start + Number(per_page); // 5, 10, 15 ...
-
-  const blogs = blogsQuery.data?.slice(start, end);
-
-  if (!blogsQuery.data) {
-    return <div></div>;
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center my-52 ">
+        <span className="loading loading-spinner loading-lg"></span>
+      </div>
+    );
   }
 
+  if (!tag) {
+    return <p>Tag not found</p>;
+  }
+
+  console.log(tag.blogs);
+
   return (
-    <main>
+    <>
       <div className="flex flex-col">
-        <h1 className="text-2xl font-semibold text-gray-800 dark:text-gray-100 sm:text-3xl sm:leading-10 md:text-5xl md:leading-14">
-          All Posts
+        <h1 className="capitalize text-2xl font-semibold text-gray-800 dark:text-gray-100 sm:text-3xl sm:leading-10 md:text-5xl md:leading-14">
+          {tag.name}
         </h1>
         <div className="divider my-2"></div>
         <ul className="flex flex-wrap">
@@ -62,21 +60,16 @@ const Page = ({
         </ul>
       </div>
 
-      {blogsQuery.isLoading ? (
+      {isLoading ? (
         <div className="flex items-center justify-center my-56">
           <span className="loading loading-spinner loading-sm"></span>
         </div>
       ) : (
         <div className="my-6">
-          <BlogList blogs={blogs} />
+          <BlogList blogs={tag.blogs} />
         </div>
       )}
-      <PaginationControls
-        hasNextPage={end < blogsQuery.data.length}
-        hasPrevPage={start > 0}
-        urlPath={"blog"}
-      />
-    </main>
+    </>
   );
 };
 
