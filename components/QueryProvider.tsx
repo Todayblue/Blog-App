@@ -14,7 +14,7 @@ function QueryProvider({ children }: React.PropsWithChildren) {
   return (
     <QueryClientProvider client={client}>
       <Hydrate>{children}</Hydrate>
-      <ReactQueryDevtools initialIsOpen={false} />
+      {/* <ReactQueryDevtools initialIsOpen={false} /> */}
     </QueryClientProvider>
   );
 }

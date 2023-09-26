@@ -8,6 +8,8 @@ import Image from "next/image";
 import { Tag } from "@/types/blog";
 import CreatableSelect from "react-select/creatable";
 import Editor from "../editor/Editor";
+import { useQuery } from "@tanstack/react-query";
+import getTags from "@/lib/getTags";
 
 type FormType = {
   title: string;
@@ -30,7 +32,6 @@ type SelectType = {
 const BlogForm = () => {
   const userId = 1;
   const [content, setContent] = useState("");
-  const [tags, setTags] = useState<Tag[]>([]);
   const [file, setFile] = useState<File | undefined>();
   const [selectedOption, setSelectedOption] = useState<SelectType[]>([]);
   const [fileURL, setFileURL] = useState<string | undefined>();
@@ -42,27 +43,13 @@ const BlogForm = () => {
     tagName: [],
   });
 
-  const getTags = async () => {
-    try {
-      const res = await axios.get("http://localhost:3000/api/tag");
-      const data = res.data;
+  const { data: tags } = useQuery({ queryKey: ["tags"], queryFn: getTags });
 
-      return data.tags;
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  if (!tags) {
+    return null;
+  }
 
-  useEffect(() => {
-    const fetchTags = async () => {
-      const fetchedTags = await getTags();
-      setTags(fetchedTags);
-    };
-
-    fetchTags();
-  }, []);
-
-  const options = tags.map((tag) => ({
+  const options = tags.map((tag: Tag) => ({
     value: tag.id.toString(),
     label: tag.name,
   }));

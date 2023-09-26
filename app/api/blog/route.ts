@@ -1,17 +1,35 @@
+import { calSkip } from "@/lib/calSkip";
 import prisma from "@/lib/prisma";
 import { NextResponse } from "next/server";
+import { type NextRequest } from "next/server";
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  const searchParams = request.nextUrl.searchParams;
+  const page = searchParams.get("page")
+  const limit = searchParams.get("limit")
+
+  if (!page || !limit) {
+    throw new Error("Both 'page' and 'limit' parameters are required.");
+  }
+
+  const parsedPage = parseInt(page, 10);
+  const parsedLimit = parseInt(limit, 10);
+  const skip = calSkip(parsedPage, parsedLimit);
+
   try {
     const blogs = await prisma.blog.findMany({
+      skip: skip,
+      take: parsedLimit,
       include: {
         tags: true,
         author: true,
       },
     });
 
+    const blogCount = await prisma.blog.count();
+
     return NextResponse.json(
-      { message: "GET Blog successfully", blogs },
+      { message: "GET Blog successfully", blogCount, blogs },
       { status: 200 }
     );
   } catch (error) {

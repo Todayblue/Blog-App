@@ -4,13 +4,22 @@ import Image from "next/image";
 import { Blog, Tag } from "@/types/blog";
 
 type BlogProps = {
-  blogs: Blog[] | undefined;
+  blogs: Blog[];
+  isLoading: boolean;
 };
 
-const BlogList = ({ blogs }: BlogProps) => {
+const BlogList = ({ blogs, isLoading }: BlogProps) => {
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center my-56">
+        <span className="loading loading-spinner loading-sm"></span>
+      </div>
+    );
+  }
+
   return (
     <div className="grid md:grid-cols-2 gap-y-5  place-items-center ">
-      {blogs?.map((blog) => (
+      {blogs.map((blog) => (
         <div
           key={blog.id}
           className="border max-w-md rounded-lg shadow dark:bg-gray-800  mb-4 duration-300 hover:scale-105 "
@@ -21,7 +30,7 @@ const BlogList = ({ blogs }: BlogProps) => {
               src={blog.coverImage}
               width={385}
               height={145}
-              className="aspect-video w-full object-cover rounded-t-lg"
+              className="max-w-md aspect-video w-full object-cover rounded-t-lg"
             />
           </Link>
           <div className="px-4">

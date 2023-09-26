@@ -1,35 +1,25 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import BlogList from "@/components/Blog/BlogList";
 import { getBlogs } from "@/lib/getBlogs";
-import { UseQueryResult, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { Blog, Tag } from "../../types/blog";
 import Link from "next/link";
 import getTags from "@/lib/getTags";
-import PaginationControls from "@/components/PaginationControls";
+import Pagination from "@/components/Pagination";
+import { ITEM_PER_PAGE } from "@/lib/constants";
 
-const Page = ({
-  searchParams,
-}: {
-  searchParams: { [key: string]: string | string[] | undefined };
-}) => {
-  const blogsQuery: UseQueryResult<Blog[]> = useQuery({
-    queryKey: ["blogs"],
-    queryFn: getBlogs,
+const Page = () => {
+  const [page, setPage] = useState<number>(1);
+  const { data, isPreviousData, isLoading } = useQuery({
+    queryKey: ["blogs", page],
+    queryFn: () => getBlogs(page, ITEM_PER_PAGE),
+    keepPreviousData: true,
   });
   const tagsQuery = useQuery({ queryKey: ["tags"], queryFn: getTags });
 
-  const page = searchParams["page"] ?? "1";
-  const per_page = searchParams["per_page"] ?? "2";
-
-  // mocked, skipped and limited in the real app
-  const start = (Number(page) - 1) * Number(per_page); // 0, 5, 10 ...
-  const end = start + Number(per_page); // 5, 10, 15 ...
-
-  const blogs = blogsQuery.data?.slice(start, end);
-
-  if (!blogsQuery.data) {
-    return <div></div>;
+  if (!data) {
+    return null;
   }
 
   return (
@@ -62,20 +52,19 @@ const Page = ({
         </ul>
       </div>
 
-      {blogsQuery.isLoading ? (
-        <div className="flex items-center justify-center my-56">
-          <span className="loading loading-spinner loading-sm"></span>
-        </div>
-      ) : (
-        <div className="my-6">
-          <BlogList blogs={blogs} />
-        </div>
-      )}
-      <PaginationControls
-        hasNextPage={end < blogsQuery.data.length}
-        hasPrevPage={start > 0}
-        urlPath={"blog"}
-      />
+      <div className="pt-6">
+        <BlogList blogs={data.blogs} isLoading={isLoading} />
+      </div>
+
+      <div className="flex justify-end pt-3 pb-6">
+        <Pagination
+          currentPage={page}
+          isPreviousData={isPreviousData}
+          url={`/blog/?page=`}
+          totalItems={data.blogCount}
+          onPageChange={(page) => setPage(page)}
+        />
+      </div>
     </main>
   );
 };

@@ -1,40 +1,33 @@
 "use client";
 import BlogList from "@/components/Blog/BlogList";
-import BlogPage from "@/components/Blog/BlogPage";
+import Pagination from "@/components/Pagination";
+import { ITEM_PER_PAGE } from "@/lib/constants";
 import { getTagBySlug } from "@/lib/getTagBySlug";
 import getTags from "@/lib/getTags";
 import { Tag } from "@/types/blog";
 
 import { useQuery, UseQueryResult } from "@tanstack/react-query";
 import Link from "next/link";
+import { useState } from "react";
 
 const Page = ({ params }: { params: { slug: string } }) => {
+  const [page, setPage] = useState<number>(1);
   const { slug } = params;
-  const { data: tag, isLoading }: UseQueryResult<Tag> = useQuery({
+  const { data, isLoading, isPreviousData } = useQuery({
     queryKey: ["tag", slug],
-    queryFn: () => getTagBySlug(slug),
+    queryFn: () => getTagBySlug(slug, page, ITEM_PER_PAGE),
   });
   const tagsQuery = useQuery({ queryKey: ["tags"], queryFn: getTags });
 
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center my-52 ">
-        <span className="loading loading-spinner loading-lg"></span>
-      </div>
-    );
-  }
-
-  if (!tag) {
+  if (!data) {
     return <p>Tag not found</p>;
   }
-
-  console.log(tag.blogs);
 
   return (
     <>
       <div className="flex flex-col">
         <h1 className="capitalize text-2xl font-semibold text-gray-800 dark:text-gray-100 sm:text-3xl sm:leading-10 md:text-5xl md:leading-14">
-          {tag.name}
+          {data.tags.name}
         </h1>
         <div className="divider my-2"></div>
         <ul className="flex flex-wrap">
@@ -65,10 +58,19 @@ const Page = ({ params }: { params: { slug: string } }) => {
           <span className="loading loading-spinner loading-sm"></span>
         </div>
       ) : (
-        <div className="my-6">
-          <BlogList blogs={tag.blogs} />
+        <div className="mt-6">
+          <BlogList isLoading={isLoading} blogs={data.blogs} />
         </div>
       )}
+      <div className="flex justify-end pb-6 ">
+        <Pagination
+          url={`/blog/tag/${slug}?page=`}
+          currentPage={page}
+          isPreviousData={isPreviousData}
+          totalItems={data.blogCount}
+          onPageChange={(page) => setPage(page)}
+        />
+      </div>
     </>
   );
 };
